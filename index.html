@@ -63,7 +63,7 @@ footer{margin-top:26px;text-align:center;color:var(--dim);font-size:12px}
 <div class="layout">
   <div class="previewBox">
     <canvas id="cv" width="1080" height="1080"></canvas>
-    <div class="hint" id="dragHint">اسحب النص على الصورة لتحريكه</div>
+    <div class="hint" id="dragHint">اسحب النص على الصورة لتحريكه، أو الصق صورة (Ctrl+V) أو اسحبها هنا</div>
   </div>
   <div class="panel" id="panel"></div>
 </div>
@@ -351,6 +351,23 @@ $("shareBtn").onclick=async()=>{
 };
 document.fonts&&document.fonts.ready.then(()=>draw());
 buildPanel();draw();
+
+// paste or drag-drop an image
+function takeImage(f){
+  if(!f||!/^image\//.test(f.type))return false;
+  const img=new Image();
+  img.onload=()=>{if(mode==="meme")M.img=img;else P.img=img;buildPanel();draw();URL.revokeObjectURL(img.src)};
+  img.src=URL.createObjectURL(f);return true;
+}
+document.addEventListener("paste",e=>{
+  const items=(e.clipboardData&&e.clipboardData.items)||[];
+  for(const it of items){if(it.kind==="file"&&takeImage(it.getAsFile())){e.preventDefault();break}}
+});
+document.addEventListener("dragover",e=>e.preventDefault());
+document.addEventListener("drop",e=>{
+  const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+  if(f&&takeImage(f))e.preventDefault();
+});
 </script>
 </body>
 </html>
