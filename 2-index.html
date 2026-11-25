@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>استوديو الميمز | ميمز وبوستات بالعربي</title>
+<meta name="description" content="اعمل ميمز وبوستات عربية في ثواني: ارفع صورتك أو اختار خلفية، اكتب نصك، وحمّل أو شارك الصورة.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@400;700&family=Cairo:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1220;--bg2:#171b31;--card:#1d2242;--line:#2b3160;--txt:#e8eaf6;--dim:#8b90b8;--acc:#ffd166;--acc2:#7c5cff}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:radial-gradient(1200px 700px at 80% -10%,#252b55 0%,var(--bg) 55%);color:var(--txt);font-family:'Tajawal',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px 12px 40px}
+.wrap{width:100%;max-width:880px}
+header{text-align:center;margin-bottom:14px}
+.brand{font-size:26px;font-weight:800}
+.brand span{color:var(--acc)}
+.sub{color:var(--dim);font-size:13px;margin-top:4px}
+.tabs{display:flex;gap:8px;justify-content:center;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:8px;margin-bottom:14px}
+.tabs button{font-family:inherit;font-size:15px;font-weight:700;color:var(--dim);background:transparent;border:none;border-radius:9px;padding:8px 18px;cursor:pointer}
+.tabs button.on{background:var(--acc);color:#1a1300}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:760px){.layout{grid-template-columns:1fr}}
+.previewBox{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:14px;text-align:center}
+canvas#cv{width:100%;max-width:440px;border-radius:12px;touch-action:none;cursor:grab}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
+.lbl{font-size:13px;color:var(--dim);margin:12px 0 6px;font-weight:700}
+.lbl:first-child{margin-top:0}
+textarea,.txtin{width:100%;font-family:inherit;font-size:15px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--txt);resize:vertical}
+textarea{min-height:56px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+input[type=range]{flex:1;accent-color:var(--acc)}
+input[type=color]{width:40px;height:34px;border:1px solid var(--line);border-radius:8px;background:var(--bg2);padding:2px;cursor:pointer}
+select{font-family:inherit;font-size:14px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--txt)}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{width:52px;height:52px;border-radius:12px;cursor:pointer;border:2px solid transparent}
+.sw.on{border-color:var(--acc)}
+.emojis{display:flex;gap:6px;flex-wrap:wrap}
+.emojis button{font-size:24px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:6px 9px;cursor:pointer}
+.emojis button.on{border-color:var(--acc);background:#2b3160}
+.upbtn{display:block;width:100%;text-align:center;font-weight:800;font-size:15px;background:var(--bg2);border:2px dashed var(--line);border-radius:12px;padding:14px;cursor:pointer;color:var(--dim)}
+.upbtn:hover{border-color:var(--acc);color:var(--acc)}
+.btns{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.btn{font-family:inherit;font-size:15px;font-weight:800;border:none;border-radius:12px;padding:12px 22px;cursor:pointer}
+.btn.p{background:var(--acc);color:#1a1300}
+.btn.s{background:var(--card);color:var(--txt);border:1px solid var(--line)}
+.btn:active{transform:scale(.96)}
+.hint{text-align:center;color:var(--dim);font-size:12px;margin-top:10px}
+footer{margin-top:26px;text-align:center;color:var(--dim);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">استوديو <span>الميمز</span></div>
+  <div class="sub">ميمز وبوستات بالعربي في ثواني — من غير برامج ومن غير حساب</div>
+</header>
+<div class="tabs">
+  <button id="tabMeme" class="on">😂 ميم</button>
+  <button id="tabPost">✍️ بوست / ستوري</button>
+</div>
+<div class="layout">
+  <div class="previewBox">
+    <canvas id="cv" width="1080" height="1080"></canvas>
+    <div class="hint" id="dragHint">اسحب النص على الصورة لتحريكه</div>
+  </div>
+  <div class="panel" id="panel"></div>
+</div>
+<div class="btns">
+  <button class="btn p" id="dlBtn">⬇️ حمّل الصورة</button>
+  <button class="btn s" id="shareBtn">📤 شارك</button>
+</div>
+<footer>مجاني بالكامل — الصور بتتعمل على جهازك ومش بتترفع لأي سيرفر</footer>
+</div>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const cv=$("cv"),ctx=cv.getContext("2d");
+let mode="meme";
+const GRADS=[
+ ["#7c5cff","#311b92"],["#ff6b6b","#7f1d1d"],["#ffd166","#b45309"],["#4ade80","#14532d"],
+ ["#38bdf8","#0c4a6e"],["#f472b6","#831843"],["#e8eaf6","#334155"],["#fbbf24","#7c2d12"]
+];
+const EMOJIS=["😂","🔥","💯","❤️","😅","🤣","👑","💔","😭","🙏","✨","🎉","😎","🤔","👀","💪"];
+let M={ // meme state
+  img:null, img2:null, top:"", bottom:"", size:64, color:"#ffffff", stroke:true,
+  topY:0.12, botY:0.88, emoji:null, emojiX:0.5, emojiY:0.5, emojiSize:90
+};
+let P={ // post state
+  text:"اكتب كلامك هنا…", author:"", grad:0, font:"Tajawal", size:72,
+  align:"center", color:"#ffffff", pattern:true, emoji:null, img:null
+};
+const QUOTES=[
+"ومن يتهيب صعود الجبال يعش أبد الدهر بين الحفر",
+"اللي جرى جرى، والقادم أجمل",
+"اشتغل في صمت وخلي نجاحك يعمل الضجة",
+"الطريق الطويل بيبدأ بخطوة",
+"متقارنش يومك الأول بسنة حد العاشرة",
+"الله مع الصابرين"
+];
+let drag=null;
+</script>
+<script>
+"use strict";
+function wrapText(x,text,maxW){
+  const words=text.split(/\s+/),lines=[];let line="";
+  for(const w of words){
+    const t=line?line+" "+w:w;
+    if(x.measureText(t).width>maxW&&line){lines.push(line);line=w}
+    else line=t;
+  }
+  if(line)lines.push(line);
+  return lines;
+}
+function drawPattern(){
+  ctx.save();ctx.globalAlpha=0.07;ctx.strokeStyle="#fff";ctx.lineWidth=2;
+  const s=90;
+  for(let i=-1;i<13;i++)for(let j=-1;j<13;j++){
+    const cx=i*s+45,cy=j*s+45;
+    ctx.beginPath();
+    for(let k=0;k<8;k++){
+      const a=Math.PI/4*k+Math.PI/8;
+      const px=cx+34*Math.cos(a),py=cy+34*Math.sin(a);
+      k?ctx.lineTo(px,py):ctx.moveTo(px,py);
+    }
+    ctx.closePath();ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawMeme(){
+  ctx.clearRect(0,0,1080,1080);
+  ctx.fillStyle="#000";ctx.fillRect(0,0,1080,1080);
+  const drawCover=(img,y0,h0)=>{
+    const ir=img.width/img.height,cr=1080/h0;
+    let dw,dh;
+    if(ir>cr){dh=h0;dw=h0*ir}else{dw=1080;dh=1080/ir}
+    ctx.save();ctx.beginPath();ctx.rect(0,y0,1080,h0);ctx.clip();
+    ctx.drawImage(img,(1080-dw)/2,y0+(h0-dh)/2,dw,dh);ctx.restore();
+  };
+  if(M.img2){
+    if(M.img)drawCover(M.img,0,540);else{ctx.fillStyle="#252b55";ctx.fillRect(0,0,1080,540)}
+    drawCover(M.img2,540,540);
+    ctx.fillStyle="#0f1220";ctx.fillRect(0,536,1080,8);
+  }else if(M.img){
+    drawCover(M.img,0,1080);
+  }else{
+    ctx.fillStyle="#1d2242";ctx.fillRect(0,0,1080,1080);
+    ctx.fillStyle="#8b90b8";ctx.font="500 40px Tajawal";ctx.textAlign="center";ctx.direction="rtl";
+    ctx.fillText("ارفع صورة عشان تبدأ 👆",540,540);
+  }
+  const draw=(txt,frac)=>{
+    if(!txt)return;
+    ctx.font="900 "+M.size+"px Cairo, Tajawal, sans-serif";
+    ctx.textAlign="center";ctx.direction="rtl";
+    const lines=wrapText(ctx,txt,980);
+    const lh=M.size*1.15;
+    let y=1080*frac;
+    if(frac>0.5)y-=(lines.length-1)*lh;
+    for(const ln of lines){
+      if(M.stroke){ctx.lineWidth=M.size/7;ctx.strokeStyle="#000";ctx.lineJoin="round";ctx.strokeText(ln,540,y)}
+      ctx.fillStyle=M.color;ctx.fillText(ln,540,y);
+      y+=lh;
+    }
+  };
+  draw(M.top,M.topY);
+  draw(M.bottom,M.botY);
+  if(M.emoji){ctx.font=M.emojiSize+"px serif";ctx.textAlign="center";ctx.fillText(M.emoji,1080*M.emojiX,1080*M.emojiY)}
+}
+function drawPost(){
+  ctx.clearRect(0,0,1080,1080);
+  if(P.img){
+    const ir=P.img.width/P.img.height;
+    let dw,dh;
+    if(ir>1){dh=1080;dw=1080*ir}else{dw=1080;dh=1080/ir}
+    ctx.drawImage(P.img,(1080-dw)/2,(1080-dh)/2,dw,dh);
+    ctx.fillStyle="rgba(10,10,25,.55)";ctx.fillRect(0,0,1080,1080);
+  }else{
+    const g=ctx.createLinearGradient(0,0,1080,1080);
+    g.addColorStop(0,GRADS[P.grad][0]);g.addColorStop(1,GRADS[P.grad][1]);
+    ctx.fillStyle=g;ctx.fillRect(0,0,1080,1080);
+    if(P.pattern)drawPattern();
+  }
+  ctx.strokeStyle="rgba(255,255,255,.55)";ctx.lineWidth=6;
+  ctx.strokeRect(54,54,972,972);
+  ctx.direction="rtl";
+  ctx.font="700 "+P.size+"px "+P.font+", sans-serif";
+  ctx.fillStyle=P.color;
+  ctx.textAlign=P.align;
+  const tx=P.align==="center"?540:(P.align==="right"?1000:80);
+  const lines=wrapText(ctx,P.text||" ",900);
+  const lh=P.size*1.35;
+  let y=540-((lines.length-1)*lh)/2+P.size*0.35;
+  if(P.emoji){ctx.font="110px serif";ctx.textAlign="center";ctx.fillText(P.emoji,540,240);ctx.font="700 "+P.size+"px "+P.font+", sans-serif";ctx.textAlign=P.align}
+  for(const ln of lines){ctx.fillText(ln,tx,y);y+=lh}
+  if(P.author){
+    ctx.font="500 42px Tajawal";ctx.textAlign="center";ctx.globalAlpha=.85;
+    ctx.fillText("— "+P.author,540,960);ctx.globalAlpha=1;
+  }
+}
+function draw(){mode==="meme"?drawMeme():drawPost();$("dragHint").style.display=mode==="meme"?"block":"none"}
+</script>
+<script>
+"use strict";
+function el(html){const d=document.createElement("div");d.innerHTML=html;return d.firstElementChild}
+function buildPanel(){
+  const p=$("panel");p.innerHTML="";
+  if(mode==="meme"){
+    const up=el('<label class="upbtn">📷 ارفع صورة الميم<input type="file" id="file" accept="image/*" hidden></label>');
+    up.querySelector("input").onchange=e=>{
+      const f=e.target.files[0];if(!f)return;
+      const img=new Image();
+      img.onload=()=>{M.img=img;draw();URL.revokeObjectURL(img.src)};
+      img.src=URL.createObjectURL(f);
+    };
+    p.appendChild(up);
+    const up2=el('<label class="upbtn" style="margin-top:8px">🖼️ صورة تانية — قالب قبل/بعد'+(M.img2?'':' (اختياري)')+'<input type="file" accept="image/*" hidden></label>');
+    up2.querySelector("input").onchange=e=>{
+      const f=e.target.files[0];if(!f)return;
+      const img=new Image();
+      img.onload=()=>{M.img2=img;buildPanel();draw();URL.revokeObjectURL(img.src)};
+      img.src=URL.createObjectURL(f);
+    };
+    p.appendChild(up2);
+    if(M.img2){
+      const rm=el('<button class="btn s" style="width:100%;margin-top:8px;padding:8px;font-size:13px">❌ شيل الصورة التانية</button>');
+      rm.onclick=()=>{M.img2=null;buildPanel();draw()};
+      p.appendChild(rm);
+    }
+    p.appendChild(el('<div class="lbl">النص اللي فوق</div>'));
+    const t1=el('<textarea maxlength="120" placeholder="مثال: حد يقولي أذاكر"></textarea>');t1.value=M.top;
+    t1.oninput=()=>{M.top=t1.value;draw()};p.appendChild(t1);
+    p.appendChild(el('<div class="lbl">النص اللي تحت</div>'));
+    const t2=el('<textarea maxlength="120" placeholder="مثال: أنا:"></textarea>');t2.value=M.bottom;
+    t2.oninput=()=>{M.bottom=t2.value;draw()};p.appendChild(t2);
+    p.appendChild(el('<div class="lbl">حجم الخط</div>'));
+    const r=el('<div class="row"><input type="range" min="36" max="130" value="'+M.size+'"><span>'+M.size+'</span></div>');
+    const rng=r.querySelector("input"),sp=r.querySelector("span");
+    rng.oninput=()=>{M.size=+rng.value;sp.textContent=rng.value;draw()};p.appendChild(r);
+    p.appendChild(el('<div class="lbl">لون النص</div>'));
+    const cr=el('<div class="row"><input type="color" value="'+M.color+'"><button class="btn s" style="padding:8px 14px;font-size:13px">حد أسود: '+(M.stroke?"شغال":"مقفول")+'</button></div>');
+    cr.querySelector("input").oninput=e=>{M.color=e.target.value;draw()};
+    cr.querySelector("button").onclick=e=>{M.stroke=!M.stroke;e.target.textContent="حد أسود: "+(M.stroke?"شغال":"مقفول");draw()};
+    p.appendChild(cr);
+  }else{
+    p.appendChild(el('<div class="lbl">النص</div>'));
+    const t=el('<textarea maxlength="220" style="min-height:90px"></textarea>');t.value=P.text;
+    t.oninput=()=>{P.text=t.value;draw()};p.appendChild(t);
+    p.appendChild(el('<div class="lbl">التوقيع (اختياري)</div>'));
+    const a=el('<input class="txtin" maxlength="40" placeholder="اسمك أو مصدر الاقتباس">');a.value=P.author;
+    a.oninput=()=>{P.author=a.value;draw()};p.appendChild(a);
+    p.appendChild(el('<div class="lbl">اقتباسات جاهزة</div>'));
+    const q=el('<div class="emojis" style="margin-bottom:4px"></div>');
+    QUOTES.forEach(t=>{
+      const b=el('<button style="font-size:12px;font-family:inherit">'+t+'</button>');
+      b.onclick=()=>{P.text=t;buildPanel();draw()};
+      q.appendChild(b);
+    });
+    p.appendChild(q);
+    const upb=el('<label class="upbtn" style="margin-bottom:8px">📷 صورة خلفية (اختياري)<input type="file" accept="image/*" hidden></label>');
+    upb.querySelector("input").onchange=e=>{
+      const f=e.target.files[0];if(!f)return;
+      const img=new Image();
+      img.onload=()=>{P.img=img;buildPanel();draw();URL.revokeObjectURL(img.src)};
+      img.src=URL.createObjectURL(f);
+    };
+    p.appendChild(upb);
+    if(P.img){
+      const rm=el('<button class="btn s" style="width:100%;margin-bottom:8px;padding:8px;font-size:13px">❌ شيل صورة الخلفية</button>');
+      rm.onclick=()=>{P.img=null;buildPanel();draw()};
+      p.appendChild(rm);
+    }
+    p.appendChild(el('<div class="lbl">الخلفية</div>'));
+    const sw=el('<div class="swatches"></div>');
+    GRADS.forEach((g,i)=>{
+      const s=el('<div class="sw'+(i===P.grad?" on":"")+'" style="background:linear-gradient(135deg,'+g[0]+','+g[1]+')"></div>');
+      s.onclick=()=>{P.grad=i;sw.querySelectorAll(".sw").forEach(x=>x.classList.remove("on"));s.classList.add("on");draw()};
+      sw.appendChild(s);
+    });
+    p.appendChild(sw);
+    p.appendChild(el('<div class="lbl">الخط والحجم</div>'));
+    const fr=el('<div class="row"><select><option value="Tajawal"'+(P.font==="Tajawal"?" selected":"")+'>تجوال (عصري)</option><option value="Amiri"'+(P.font==="Amiri"?" selected":"")+'>أميري (كلاسيك)</option><option value="Cairo"'+(P.font==="Cairo"?" selected":"")+'>القاهرة (عريض)</option></select><input type="range" min="40" max="120" value="'+P.size+'"><span>'+P.size+'</span></div>');
+    fr.querySelector("select").onchange=e=>{P.font=e.target.value;draw()};
+    const rng=fr.querySelector("input");
+    rng.oninput=()=>{P.size=+rng.value;fr.querySelector("span").textContent=rng.value;draw()};
+    p.appendChild(fr);
+    p.appendChild(el('<div class="lbl">المحاذاة واللون</div>'));
+    const ar=el('<div class="row"><select><option value="center">وسط</option><option value="right">يمين</option><option value="left">شمال</option></select><input type="color" value="'+P.color+'"><button class="btn s" style="padding:8px 14px;font-size:13px">زخرفة: '+(P.pattern?"شغالة":"مقفولة")+'</button></div>');
+    ar.querySelector("select").onchange=e=>{P.align=e.target.value;draw()};
+    ar.querySelector("input").oninput=e=>{P.color=e.target.value;draw()};
+    ar.querySelector("button").onclick=e=>{P.pattern=!P.pattern;e.target.textContent="زخرفة: "+(P.pattern?"شغالة":"مقفولة");draw()};
+    p.appendChild(ar);
+  }
+  p.appendChild(el('<div class="lbl">إيموجي (اضغط لإضافته/إلغائه)</div>'));
+  const em=el('<div class="emojis"></div>');
+  EMOJIS.forEach(e2=>{
+    const b=el('<button>'+e2+'</button>');
+    const cur=mode==="meme"?M.emoji:P.emoji;
+    if(cur===e2)b.classList.add("on");
+    b.onclick=()=>{
+      if(mode==="meme"){M.emoji=M.emoji===e2?null:e2}else{P.emoji=P.emoji===e2?null:e2}
+      em.querySelectorAll("button").forEach(x=>x.classList.remove("on"));
+      if((mode==="meme"?M.emoji:P.emoji)===e2)b.classList.add("on");
+      draw();
+    };
+    em.appendChild(b);
+  });
+  p.appendChild(em);
+}
+$("tabMeme").onclick=()=>{mode="meme";$("tabMeme").classList.add("on");$("tabPost").classList.remove("on");buildPanel();draw()};
+$("tabPost").onclick=()=>{mode="post";$("tabPost").classList.add("on");$("tabMeme").classList.remove("on");buildPanel();draw()};
+// drag text on canvas (meme mode)
+function pos(e){
+  const r=cv.getBoundingClientRect();
+  const t=e.touches?e.touches[0]:e;
+  return {x:(t.clientX-r.left)/r.width,y:(t.clientY-r.top)/r.height};
+}
+function down(e){
+  if(mode!=="meme")return;
+  const p=pos(e);
+  drag={start:p,topY:M.topY,botY:M.botY,ex:M.emojiX,ey:M.emojiY,
+        zone:p.y<0.4?"top":(p.y>0.6?"bot":"mid")};
+  e.preventDefault();
+}
+function move(e){
+  if(!drag)return;
+  const p=pos(e),dy=p.y-drag.start.y;
+  if(drag.zone==="top")M.topY=Math.min(.45,Math.max(.04,drag.topY+dy));
+  else if(drag.zone==="bot")M.botY=Math.min(.97,Math.max(.55,drag.botY+dy));
+  else if(M.emoji){M.emojiX=Math.min(.95,Math.max(.05,p.x));M.emojiY=Math.min(.95,Math.max(.05,p.y))}
+  draw();e.preventDefault();
+}
+function up(){drag=null}
+cv.addEventListener("mousedown",down);cv.addEventListener("mousemove",move);
+window.addEventListener("mouseup",up);
+cv.addEventListener("touchstart",down,{passive:false});
+cv.addEventListener("touchmove",move,{passive:false});
+window.addEventListener("touchend",up);
+$("dlBtn").onclick=()=>{
+  const a=document.createElement("a");
+  a.download=(mode==="meme"?"ميم":"بوست")+"-"+Date.now()+".png";
+  a.href=cv.toDataURL("image/png");a.click();
+};
+$("shareBtn").onclick=async()=>{
+  try{
+    const blob=await new Promise(r=>cv.toBlob(r,"image/png"));
+    const f=new File([blob],"meme.png",{type:"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f]});
+    else{$("shareBtn").textContent="شارك من زر التحميل ⬇️";setTimeout(()=>$("shareBtn").textContent="📤 شارك",2200)}
+  }catch(e){}
+};
+document.fonts&&document.fonts.ready.then(()=>draw());
+buildPanel();draw();
+</script>
+</body>
+</html>
